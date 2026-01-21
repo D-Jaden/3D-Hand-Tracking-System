@@ -118,11 +118,12 @@ class ParticleSystem {
 
     calculateParticlePosition(type, index, angle, radius, config) {
         const pos = { x: 0, y: 0, z: 0 };
+        const normalizedIndex = index / this.PARTICLE_COUNT;
 
         switch (type) {
             case 'planet':
                 // Spherical distribution
-                const theta = Math.acos(2 * (index / this.PARTICLE_COUNT) - 1);
+                const theta = Math.acos(2 * normalizedIndex - 1);
                 const phi = Math.sqrt(this.PARTICLE_COUNT * Math.PI) * theta;
                 pos.x = radius * Math.sin(theta) * Math.cos(phi);
                 pos.y = radius * Math.sin(theta) * Math.sin(phi);
@@ -132,7 +133,8 @@ class ParticleSystem {
             case 'ringed_planet':
                 if (index < this.PARTICLE_COUNT * 0.6) {
                     // Planet sphere
-                    const t = Math.acos(2 * (index / (this.PARTICLE_COUNT * 0.6)) - 1);
+                    const sphereIndex = index / (this.PARTICLE_COUNT * 0.6);
+                    const t = Math.acos(2 * sphereIndex - 1);
                     const p = Math.sqrt(this.PARTICLE_COUNT * Math.PI) * t;
                     pos.x = radius * 0.5 * Math.sin(t) * Math.cos(p);
                     pos.y = radius * 0.5 * Math.sin(t) * Math.sin(p);
@@ -141,7 +143,7 @@ class ParticleSystem {
                     // Rings
                     const ringRadius = radius * (0.8 + Math.random() * 0.4);
                     pos.x = Math.cos(angle) * ringRadius;
-                    pos.y = Math.sin(angle) * ringRadius * 0.05;
+                    pos.y = (Math.random() - 0.5) * ringRadius * 0.05;
                     pos.z = Math.sin(angle) * ringRadius;
                 }
                 break;
@@ -163,11 +165,11 @@ class ParticleSystem {
                 break;
 
             case 'black_hole':
-                // Accretion disk
-                const diskRadius = radius * (0.5 + index / this.PARTICLE_COUNT);
-                const spiralAngle = angle + diskRadius * 5;
+                // Accretion disk with fixed spiral calculation
+                const diskRadius = radius * (0.5 + normalizedIndex);
+                const spiralAngle = angle + (diskRadius * 5);
                 pos.x = Math.cos(spiralAngle) * diskRadius;
-                pos.y = Math.sin(spiralAngle) * diskRadius * 0.1;
+                pos.y = (Math.random() - 0.5) * diskRadius * 0.1;
                 pos.z = Math.sin(spiralAngle) * diskRadius;
                 break;
 
@@ -182,16 +184,18 @@ class ParticleSystem {
                 // Multiple orbits
                 const orbit = Math.floor(index / (this.PARTICLE_COUNT / 5));
                 const orbitRadius = radius * (0.3 + orbit * 0.2);
-                pos.x = Math.cos(angle + orbit) * orbitRadius;
-                pos.y = Math.sin(angle + orbit) * orbitRadius * 0.1;
-                pos.z = Math.sin(angle) * orbitRadius;
+                const orbitAngle = angle + orbit;
+                pos.x = Math.cos(orbitAngle) * orbitRadius;
+                pos.y = (Math.random() - 0.5) * orbitRadius * 0.1;
+                pos.z = Math.sin(orbitAngle) * orbitRadius;
                 break;
 
             case 'galaxy':
-                // Spiral galaxy arms
-                const spiralAngle = angle + radius * 3;
-                pos.x = Math.cos(spiralAngle) * radius * 1.5;
-                pos.y = Math.sin(spiralAngle) * radius * 1.5;
+                // Spiral galaxy arms with fixed calculation
+                const galaxyRadius = radius * 1.5;
+                const spiralGalaxyAngle = angle + (radius * 3);
+                pos.x = Math.cos(spiralGalaxyAngle) * galaxyRadius;
+                pos.y = Math.sin(spiralGalaxyAngle) * galaxyRadius;
                 pos.z = Math.sin(radius * 2) * 0.2;
                 break;
 
@@ -199,7 +203,7 @@ class ParticleSystem {
                 // Multiple galaxy clusters
                 const cluster = Math.floor(index / (this.PARTICLE_COUNT / 3));
                 const clusterOffset = cluster * 2 - 2;
-                const clusterAngle = angle + radius * 2;
+                const clusterAngle = angle + (radius * 2);
                 pos.x = Math.cos(clusterAngle) * radius + clusterOffset;
                 pos.y = Math.sin(clusterAngle) * radius;
                 pos.z = Math.sin(radius) * 0.5;
