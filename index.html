@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Cosmic Dex - Hand-Controlled Multiverse Explorer</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -16,6 +17,7 @@
             overflow: hidden;
             background: #000510;
             color: #fff;
+            touch-action: none;
         }
 
         #cosmic-canvas {
@@ -29,15 +31,25 @@
 
         #camera-feed {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            width: 200px;
-            height: 150px;
-            border-radius: 12px;
+            top: 10px;
+            right: 10px;
+            width: 120px;
+            height: 90px;
+            border-radius: 8px;
             border: 2px solid rgba(0, 217, 255, 0.5);
             z-index: 10;
             object-fit: cover;
             opacity: 0.8;
+        }
+
+        @media (min-width: 768px) {
+            #camera-feed {
+                top: 20px;
+                right: 20px;
+                width: 200px;
+                height: 150px;
+                border-radius: 12px;
+            }
         }
 
         /* Camera Permission Modal */
@@ -52,36 +64,58 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 20px;
         }
 
         .modal-content {
             background: linear-gradient(135deg, rgba(0, 30, 60, 0.9), rgba(0, 10, 30, 0.9));
             border: 2px solid rgba(0, 217, 255, 0.5);
             border-radius: 20px;
-            padding: 40px;
+            padding: 30px 20px;
             max-width: 500px;
+            width: 100%;
             text-align: center;
             box-shadow: 0 20px 60px rgba(0, 217, 255, 0.3);
         }
 
+        @media (min-width: 768px) {
+            .modal-content {
+                padding: 40px;
+            }
+        }
+
         .modal-content h1 {
-            font-size: 32px;
-            margin-bottom: 20px;
+            font-size: 24px;
+            margin-bottom: 15px;
             background: linear-gradient(90deg, #00d9ff, #ff00ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
+        @media (min-width: 768px) {
+            .modal-content h1 {
+                font-size: 32px;
+                margin-bottom: 20px;
+            }
+        }
+
         .modal-content p {
-            font-size: 16px;
-            margin-bottom: 30px;
+            font-size: 14px;
+            margin-bottom: 25px;
             color: #a0d9ff;
         }
 
+        @media (min-width: 768px) {
+            .modal-content p {
+                font-size: 16px;
+                margin-bottom: 30px;
+            }
+        }
+
         #grant-camera-btn {
-            padding: 15px 40px;
-            font-size: 18px;
+            padding: 12px 30px;
+            font-size: 16px;
             background: linear-gradient(90deg, #00d9ff, #0088ff);
             border: none;
             border-radius: 12px;
@@ -89,9 +123,19 @@
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 5px 20px rgba(0, 217, 255, 0.4);
+            width: 100%;
+            max-width: 280px;
         }
 
-        #grant-camera-btn:hover {
+        @media (min-width: 768px) {
+            #grant-camera-btn {
+                padding: 15px 40px;
+                font-size: 18px;
+                width: auto;
+            }
+        }
+
+        #grant-camera-btn:active {
             transform: translateY(-3px);
             box-shadow: 0 8px 30px rgba(0, 217, 255, 0.6);
         }
@@ -116,13 +160,20 @@
         }
 
         .loading-spinner {
-            width: 80px;
-            height: 80px;
+            width: 60px;
+            height: 60px;
             border: 4px solid rgba(0, 217, 255, 0.2);
             border-top: 4px solid #00d9ff;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-bottom: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .loading-spinner {
+                width: 80px;
+                height: 80px;
+            }
         }
 
         @keyframes spin {
@@ -131,8 +182,16 @@
         }
 
         #loading-text {
-            font-size: 20px;
+            font-size: 16px;
             color: #00d9ff;
+            padding: 0 20px;
+            text-align: center;
+        }
+
+        @media (min-width: 768px) {
+            #loading-text {
+                font-size: 20px;
+            }
         }
 
         /* HUD Overlay */
@@ -144,46 +203,88 @@
 
         /* Top Left - Entity Info */
         #entity-info {
-            top: 20px;
-            left: 20px;
+            top: 10px;
+            left: 10px;
             background: rgba(0, 10, 30, 0.8);
             border: 2px solid rgba(0, 217, 255, 0.5);
-            border-radius: 15px;
-            padding: 20px;
-            min-width: 280px;
+            border-radius: 10px;
+            padding: 12px;
+            min-width: 200px;
             backdrop-filter: blur(10px);
+            font-size: 12px;
+        }
+
+        @media (min-width: 768px) {
+            #entity-info {
+                top: 20px;
+                left: 20px;
+                border-radius: 15px;
+                padding: 20px;
+                min-width: 280px;
+                font-size: 14px;
+            }
         }
 
         #entity-name {
-            font-size: 24px;
+            font-size: 18px;
             font-weight: bold;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             background: linear-gradient(90deg, #00d9ff, #ff00ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
+        @media (min-width: 768px) {
+            #entity-name {
+                font-size: 24px;
+                margin-bottom: 8px;
+            }
+        }
+
         #entity-type {
-            font-size: 14px;
+            font-size: 11px;
             color: #a0d9ff;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
+        }
+
+        @media (min-width: 768px) {
+            #entity-type {
+                font-size: 14px;
+                margin-bottom: 15px;
+            }
         }
 
         #rarity-badge {
             display: inline-block;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 10px;
             font-weight: bold;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
+        }
+
+        @media (min-width: 768px) {
+            #rarity-badge {
+                padding: 6px 12px;
+                border-radius: 8px;
+                font-size: 12px;
+                margin-bottom: 15px;
+            }
         }
 
         .stat-row {
             display: flex;
             justify-content: space-between;
-            margin: 8px 0;
-            font-size: 14px;
+            margin: 6px 0;
+            font-size: 11px;
+        }
+
+        @media (min-width: 768px) {
+            .stat-row {
+                margin: 8px 0;
+                font-size: 14px;
+            }
         }
 
         .stat-label {
@@ -197,52 +298,101 @@
 
         /* Bottom Left - Controls */
         #controls-info {
-            bottom: 20px;
-            left: 20px;
+            bottom: 10px;
+            left: 10px;
             background: rgba(0, 10, 30, 0.8);
             border: 2px solid rgba(0, 217, 255, 0.5);
-            border-radius: 15px;
-            padding: 20px;
+            border-radius: 10px;
+            padding: 10px;
             backdrop-filter: blur(10px);
+            max-width: calc(100vw - 20px);
+        }
+
+        @media (min-width: 768px) {
+            #controls-info {
+                bottom: 20px;
+                left: 20px;
+                border-radius: 15px;
+                padding: 20px;
+                max-width: none;
+            }
         }
 
         .control-item {
             display: flex;
             align-items: center;
-            margin: 10px 0;
-            font-size: 14px;
+            margin: 6px 0;
+            font-size: 11px;
+        }
+
+        @media (min-width: 768px) {
+            .control-item {
+                margin: 10px 0;
+                font-size: 14px;
+            }
         }
 
         .control-icon {
-            font-size: 24px;
-            margin-right: 12px;
+            font-size: 18px;
+            margin-right: 8px;
+        }
+
+        @media (min-width: 768px) {
+            .control-icon {
+                font-size: 24px;
+                margin-right: 12px;
+            }
         }
 
         /* Bottom Right - Power Meter */
         #power-meter {
-            bottom: 20px;
-            right: 20px;
+            bottom: 10px;
+            right: 10px;
             background: rgba(0, 10, 30, 0.8);
             border: 2px solid rgba(0, 217, 255, 0.5);
-            border-radius: 15px;
-            padding: 20px;
-            min-width: 200px;
+            border-radius: 10px;
+            padding: 12px;
+            min-width: 150px;
             backdrop-filter: blur(10px);
         }
 
+        @media (min-width: 768px) {
+            #power-meter {
+                bottom: 20px;
+                right: 20px;
+                border-radius: 15px;
+                padding: 20px;
+                min-width: 200px;
+            }
+        }
+
         #power-label {
-            font-size: 14px;
+            font-size: 11px;
             color: #a0d9ff;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+        }
+
+        @media (min-width: 768px) {
+            #power-label {
+                font-size: 14px;
+                margin-bottom: 10px;
+            }
         }
 
         #power-bar {
             width: 100%;
-            height: 30px;
+            height: 20px;
             background: rgba(0, 50, 100, 0.5);
-            border-radius: 15px;
+            border-radius: 10px;
             overflow: hidden;
             border: 1px solid rgba(0, 217, 255, 0.3);
+        }
+
+        @media (min-width: 768px) {
+            #power-bar {
+                height: 30px;
+                border-radius: 15px;
+            }
         }
 
         #power-fill {
@@ -255,44 +405,82 @@
 
         /* Top Center - Mode & Status */
         #mode-status {
-            top: 20px;
+            top: 10px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0, 10, 30, 0.8);
             border: 2px solid rgba(0, 217, 255, 0.5);
-            border-radius: 15px;
-            padding: 15px 30px;
+            border-radius: 10px;
+            padding: 10px 15px;
             text-align: center;
             backdrop-filter: blur(10px);
+            max-width: calc(100vw - 20px);
+        }
+
+        @media (min-width: 768px) {
+            #mode-status {
+                top: 20px;
+                border-radius: 15px;
+                padding: 15px 30px;
+                max-width: none;
+            }
         }
 
         #current-mode {
-            font-size: 18px;
+            font-size: 14px;
             font-weight: bold;
             color: #00ff88;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
+        }
+
+        @media (min-width: 768px) {
+            #current-mode {
+                font-size: 18px;
+                margin-bottom: 8px;
+            }
         }
 
         #gesture-status {
-            font-size: 14px;
+            font-size: 11px;
             color: #a0d9ff;
+        }
+
+        @media (min-width: 768px) {
+            #gesture-status {
+                font-size: 14px;
+            }
         }
 
         #hand-status {
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-top: 8px;
-            font-size: 12px;
+            margin-top: 6px;
+            font-size: 10px;
+        }
+
+        @media (min-width: 768px) {
+            #hand-status {
+                margin-top: 8px;
+                font-size: 12px;
+            }
         }
 
         .status-dot {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             background: #ff4444;
-            margin-right: 8px;
+            margin-right: 6px;
             animation: pulse 2s infinite;
+        }
+
+        @media (min-width: 768px) {
+            .status-dot {
+                width: 10px;
+                height: 10px;
+                margin-right: 8px;
+            }
         }
 
         .status-dot.active {
@@ -306,29 +494,51 @@
 
         /* Universe Counter */
         #universe-counter {
-            top: 200px;
-            right: 20px;
+            top: 110px;
+            right: 10px;
             background: rgba(0, 10, 30, 0.8);
             border: 2px solid rgba(0, 217, 255, 0.5);
-            border-radius: 15px;
-            padding: 15px;
+            border-radius: 10px;
+            padding: 10px;
             text-align: center;
             backdrop-filter: blur(10px);
         }
 
+        @media (min-width: 768px) {
+            #universe-counter {
+                top: 200px;
+                right: 20px;
+                border-radius: 15px;
+                padding: 15px;
+            }
+        }
+
         #universe-label {
-            font-size: 12px;
+            font-size: 10px;
             color: #a0d9ff;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
+        }
+
+        @media (min-width: 768px) {
+            #universe-label {
+                font-size: 12px;
+                margin-bottom: 5px;
+            }
         }
 
         #universe-count {
-            font-size: 32px;
+            font-size: 24px;
             font-weight: bold;
             background: linear-gradient(90deg, #00d9ff, #ff00ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+        }
+
+        @media (min-width: 768px) {
+            #universe-count {
+                font-size: 32px;
+            }
         }
 
         /* Evolution Animation Overlay */
@@ -356,13 +566,19 @@
         }
 
         .evolution-text {
-            font-size: 48px;
+            font-size: 32px;
             font-weight: bold;
             background: linear-gradient(90deg, #00d9ff, #ff00ff, #00ff88);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             animation: evolutionGlow 1s ease;
+        }
+
+        @media (min-width: 768px) {
+            .evolution-text {
+                font-size: 48px;
+            }
         }
 
         @keyframes evolutionGlow {
@@ -468,10 +684,10 @@
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 
-    <!-- Application Modules -->
-    <script src="handTracking.js"></script>
+    <!-- Application Modules - LOAD IN CORRECT ORDER -->
     <script src="particles.js"></script>
     <script src="universeModes.js"></script>
+    <script src="handTracking.js"></script>
     <script src="main.js"></script>
 </body>
 </html>
