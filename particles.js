@@ -121,7 +121,7 @@ class ParticleSystem {
         const normalizedIndex = index / this.PARTICLE_COUNT;
 
         switch (type) {
-            case 'planet':
+            case 'planet': {
                 // Spherical distribution
                 const theta = Math.acos(2 * normalizedIndex - 1);
                 const phi = Math.sqrt(this.PARTICLE_COUNT * Math.PI) * theta;
@@ -129,8 +129,9 @@ class ParticleSystem {
                 pos.y = radius * Math.sin(theta) * Math.sin(phi);
                 pos.z = radius * Math.cos(theta);
                 break;
+            }
 
-            case 'ringed_planet':
+            case 'ringed_planet': {
                 if (index < this.PARTICLE_COUNT * 0.6) {
                     // Planet sphere
                     const sphereIndex = index / (this.PARTICLE_COUNT * 0.6);
@@ -147,40 +148,45 @@ class ParticleSystem {
                     pos.z = Math.sin(angle) * ringRadius;
                 }
                 break;
+            }
 
-            case 'star':
+            case 'star': {
                 // Bright core with corona
                 const coreRadius = radius * (0.3 + Math.random() * 0.7);
                 pos.x = Math.cos(angle) * coreRadius;
                 pos.y = Math.sin(angle) * coreRadius;
                 pos.z = (Math.random() - 0.5) * coreRadius;
                 break;
+            }
 
-            case 'supergiant':
+            case 'supergiant': {
                 // Massive expanding star
                 const expandRadius = radius * (1.5 + Math.random());
                 pos.x = Math.cos(angle) * expandRadius;
                 pos.y = Math.sin(angle) * expandRadius;
                 pos.z = Math.sin(angle * 2) * expandRadius * 0.5;
                 break;
+            }
 
-            case 'black_hole':
-                // Accretion disk with fixed spiral calculation
+            case 'black_hole': {
+                // Accretion disk
                 const diskRadius = radius * (0.5 + normalizedIndex);
-                const blackHoleSpiralAngle = angle + (diskRadius * 5);
-                pos.x = Math.cos(blackHoleSpiralAngle) * diskRadius;
+                const diskAngle = angle + (diskRadius * 5);
+                pos.x = Math.cos(diskAngle) * diskRadius;
                 pos.y = (Math.random() - 0.5) * diskRadius * 0.1;
-                pos.z = Math.sin(blackHoleSpiralAngle) * diskRadius;
+                pos.z = Math.sin(diskAngle) * diskRadius;
                 break;
+            }
 
-            case 'nebula':
+            case 'nebula': {
                 // Cloud-like distribution
                 pos.x = (Math.random() - 0.5) * radius * 2;
                 pos.y = (Math.random() - 0.5) * radius * 2;
                 pos.z = (Math.random() - 0.5) * radius;
                 break;
+            }
 
-            case 'solar_system':
+            case 'solar_system': {
                 // Multiple orbits
                 const orbit = Math.floor(index / (this.PARTICLE_COUNT / 5));
                 const orbitRadius = radius * (0.3 + orbit * 0.2);
@@ -189,17 +195,19 @@ class ParticleSystem {
                 pos.y = (Math.random() - 0.5) * orbitRadius * 0.1;
                 pos.z = Math.sin(orbitAngle) * orbitRadius;
                 break;
+            }
 
-            case 'galaxy':
-                // Spiral galaxy arms with fixed calculation
+            case 'galaxy': {
+                // Spiral galaxy arms
                 const galaxyRadius = radius * 1.5;
-                const galaxySpiralAngle = angle + (radius * 3);
-                pos.x = Math.cos(galaxySpiralAngle) * galaxyRadius;
-                pos.y = Math.sin(galaxySpiralAngle) * galaxyRadius;
+                const galaxyAngle = angle + (radius * 3);
+                pos.x = Math.cos(galaxyAngle) * galaxyRadius;
+                pos.y = Math.sin(galaxyAngle) * galaxyRadius;
                 pos.z = Math.sin(radius * 2) * 0.2;
                 break;
+            }
 
-            case 'multiverse':
+            case 'multiverse': {
                 // Multiple galaxy clusters
                 const cluster = Math.floor(index / (this.PARTICLE_COUNT / 3));
                 const clusterOffset = cluster * 2 - 2;
@@ -208,11 +216,13 @@ class ParticleSystem {
                 pos.y = Math.sin(clusterAngle) * radius;
                 pos.z = Math.sin(radius) * 0.5;
                 break;
+            }
 
-            default:
+            default: {
                 pos.x = Math.cos(angle) * radius;
                 pos.y = Math.sin(angle) * radius;
                 pos.z = (Math.random() - 0.5) * radius;
+            }
         }
 
         return pos;
