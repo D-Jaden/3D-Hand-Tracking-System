@@ -685,9 +685,19 @@
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 
     <!-- Application Modules - LOAD IN CORRECT ORDER -->
-    <script src="particles.js"></script>
-    <script src="universeModes.js"></script>
-    <script src="handTracking.js"></script>
-    <script src="main.js"></script>
+    <script defer src="particles.js"></script>
+    <script defer src="universeModes.js"></script>
+    <script defer src="handTracking.js"></script>
+    <script defer src="main.js"></script>
+    
+    <script>
+        // Ensure all scripts are loaded before initializing
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM loaded');
+            console.log('ParticleSystem available:', typeof ParticleSystem);
+            console.log('UniverseManager available:', typeof UniverseManager);
+            console.log('HandTracker available:', typeof HandTracker);
+        });
+    </script>
 </body>
 </html>
