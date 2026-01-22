@@ -167,10 +167,10 @@ class ParticleSystem {
             case 'black_hole':
                 // Accretion disk with fixed spiral calculation
                 const diskRadius = radius * (0.5 + normalizedIndex);
-                const spiralAngle = angle + (diskRadius * 5);
-                pos.x = Math.cos(spiralAngle) * diskRadius;
+                const blackHoleSpiralAngle = angle + (diskRadius * 5);
+                pos.x = Math.cos(blackHoleSpiralAngle) * diskRadius;
                 pos.y = (Math.random() - 0.5) * diskRadius * 0.1;
-                pos.z = Math.sin(spiralAngle) * diskRadius;
+                pos.z = Math.sin(blackHoleSpiralAngle) * diskRadius;
                 break;
 
             case 'nebula':
@@ -193,9 +193,9 @@ class ParticleSystem {
             case 'galaxy':
                 // Spiral galaxy arms with fixed calculation
                 const galaxyRadius = radius * 1.5;
-                const spiralGalaxyAngle = angle + (radius * 3);
-                pos.x = Math.cos(spiralGalaxyAngle) * galaxyRadius;
-                pos.y = Math.sin(spiralGalaxyAngle) * galaxyRadius;
+                const galaxySpiralAngle = angle + (radius * 3);
+                pos.x = Math.cos(galaxySpiralAngle) * galaxyRadius;
+                pos.y = Math.sin(galaxySpiralAngle) * galaxyRadius;
                 pos.z = Math.sin(radius * 2) * 0.2;
                 break;
 
