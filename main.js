@@ -1,5 +1,3 @@
-// main.js - Main Application with Integrated Particle System
-
 // ============================================
 // PARTICLE SYSTEM (Integrated)
 // ============================================
@@ -42,13 +40,13 @@ class ParticleSystem {
             positions[i3 + 1] = pos.y + position.y;
             positions[i3 + 2] = pos.z + position.z;
 
-            // Grayscale colors based on brightness
-            const brightness = 0.5 + (i / this.PARTICLE_COUNT) * 0.5;
+            // Grayscale colors based on brightness - make brighter and more visible
+            const brightness = 0.7 + (i / this.PARTICLE_COUNT) * 0.3;
             colors[i3] = brightness;
             colors[i3 + 1] = brightness;
             colors[i3 + 2] = brightness;
 
-            sizes[i] = Math.random() * 0.04 + 0.02;
+            sizes[i] = Math.random() * 0.08 + 0.04;
             velocities[i3] = (Math.random() - 0.5) * 0.01;
             velocities[i3 + 1] = (Math.random() - 0.5) * 0.01;
             velocities[i3 + 2] = (Math.random() - 0.5) * 0.01;
@@ -88,10 +86,10 @@ class ParticleSystem {
                     float dist = length(center);
                     if (dist > 0.5) discard;
                     
-                    float alpha = 1.0 - smoothstep(0.2, 0.5, dist);
-                    vec3 finalColor = vColor * (1.0 + entityGlow * 0.3);
+                    float alpha = 1.0 - smoothstep(0.0, 0.5, dist);
+                    vec3 finalColor = vColor * (1.5 + entityGlow);
                     
-                    gl_FragColor = vec4(finalColor, alpha * 0.9);
+                    gl_FragColor = vec4(finalColor, alpha);
                 }
             `,
             blending: THREE.AdditiveBlending,
@@ -505,9 +503,9 @@ class HandTracker {
         const thumbIndexDist = Math.hypot(thumb.x - index.x, thumb.y - index.y);
         const thumbPinkyDist = Math.hypot(thumb.x - pinky.x, thumb.y - pinky.y);
         
-        if (thumbIndexDist < 0.08) {
+        if (thumbIndexDist < 0.12) {
             const velocity = Math.hypot(this.gestureState.handVelocity.x, this.gestureState.handVelocity.y);
-            if (velocity > 0.5) {
+            if (velocity > 0.3) {
                 return 'summon';
             }
             return 'pinch';
@@ -525,7 +523,7 @@ class HandTracker {
             return 'two_hands';
         }
 
-        if (this.gestureState.handVelocity.y < -1.5) {
+        if (this.gestureState.handVelocity.y < -1.0) {
             return 'create_universe';
         }
 
@@ -621,6 +619,9 @@ class CosmicDex {
             this.setupGestureHandlers();
 
             const initialEntity = this.particleSystem.createEntity('planet');
+            console.log('Initial entity created:', initialEntity);
+            console.log('Scene children count:', this.scene.children.length);
+            console.log('Particle mesh position:', initialEntity.mesh.position);
             this.updateHUD(initialEntity);
 
             loadingText.textContent = 'Ready!';
@@ -642,7 +643,8 @@ class CosmicDex {
     initThree() {
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(0x000000);
-        this.scene.fog = new THREE.FogExp2(0x000000, 0.05);
+        // Remove fog that was hiding particles
+        // this.scene.fog = new THREE.FogExp2(0x000000, 0.05);
 
         this.camera = new THREE.PerspectiveCamera(
             75,
@@ -661,10 +663,10 @@ class CosmicDex {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-        const ambientLight = new THREE.AmbientLight(0x404040, 1);
+        const ambientLight = new THREE.AmbientLight(0xffffff, 2);
         this.scene.add(ambientLight);
 
-        const pointLight = new THREE.PointLight(0xffffff, 2, 100);
+        const pointLight = new THREE.PointLight(0xffffff, 3, 100);
         pointLight.position.set(0, 0, 10);
         this.scene.add(pointLight);
 
@@ -719,11 +721,14 @@ class CosmicDex {
         const types = ['planet', 'star', 'nebula', 'ringed_planet'];
         const randomType = types[Math.floor(Math.random() * types.length)];
 
+        console.log('Summoning entity:', randomType);
+
         if (this.particleSystem.currentEntity) {
             this.particleSystem.removeEntity(this.particleSystem.currentEntity);
         }
 
         const entity = this.particleSystem.createEntity(randomType);
+        console.log('Entity created:', entity);
         this.updateHUD(entity);
         this.cosmicPower = Math.max(this.cosmicPower - 20, 0);
     }
