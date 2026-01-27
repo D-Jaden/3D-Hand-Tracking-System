@@ -1,3 +1,5 @@
+// main.js - Main Application with Integrated Particle System
+
 // ============================================
 // PARTICLE SYSTEM (Integrated)
 // ============================================
@@ -30,6 +32,9 @@ class ParticleSystem {
         const sizes = new Float32Array(this.PARTICLE_COUNT);
         const velocities = new Float32Array(this.PARTICLE_COUNT * 3);
 
+        // Get current universe color scheme
+        const colorScheme = window.currentUniverseColor || { hue: 0.5, sat: 0.8 };
+
         for (let i = 0; i < this.PARTICLE_COUNT; i++) {
             const i3 = i * 3;
             const angle = (i / this.PARTICLE_COUNT) * Math.PI * 2 * config.spirals;
@@ -40,11 +45,14 @@ class ParticleSystem {
             positions[i3 + 1] = pos.y + position.y;
             positions[i3 + 2] = pos.z + position.z;
 
-            // Grayscale colors based on brightness - make brighter and more visible
-            const brightness = 0.7 + (i / this.PARTICLE_COUNT) * 0.3;
-            colors[i3] = brightness;
-            colors[i3 + 1] = brightness;
-            colors[i3 + 2] = brightness;
+            // Use universe color scheme
+            const hueVariation = (i / this.PARTICLE_COUNT) * 0.1 - 0.05;
+            const hue = (colorScheme.hue + hueVariation + 1) % 1;
+            const lightness = 0.5 + (i / this.PARTICLE_COUNT) * 0.3;
+            const rgb = this.hslToRgb(hue, colorScheme.sat, lightness);
+            colors[i3] = rgb[0];
+            colors[i3 + 1] = rgb[1];
+            colors[i3 + 2] = rgb[2];
 
             sizes[i] = Math.random() * 0.08 + 0.04;
             velocities[i3] = (Math.random() - 0.5) * 0.01;
@@ -271,6 +279,28 @@ class ParticleSystem {
         return 'COMMON';
     }
 
+    hslToRgb(h, s, l) {
+        let r, g, b;
+        if (s === 0) {
+            r = g = b = l;
+        } else {
+            const hue2rgb = (p, q, t) => {
+                if (t < 0) t += 1;
+                if (t > 1) t -= 1;
+                if (t < 1/6) return p + (q - p) * 6 * t;
+                if (t < 1/2) return q;
+                if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                return p;
+            };
+            const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            const p = 2 * l - q;
+            r = hue2rgb(p, q, h + 1/3);
+            g = hue2rgb(p, q, h);
+            b = hue2rgb(p, q, h - 1/3);
+        }
+        return [r, g, b];
+    }
+
     removeEntity(entity) {
         if (entity && entity.mesh) {
             this.scene.remove(entity.mesh);
@@ -291,6 +321,7 @@ class UniverseManager {
         this.activeUniverseIndex = 0;
         this.zoomLevel = 0;
         this.transitionProgress = 1;
+        this.currentUniverseColor = this.generateColorScheme(); // Current active universe color
     }
 
     getModeFromZoom(handDistance) {
@@ -335,12 +366,15 @@ class UniverseManager {
     }
 
     createUniverse() {
+        const colorScheme = this.generateColorScheme();
         const universe = {
             id: this.universes.length,
             physics: this.generatePhysics(),
-            chaosLevel: Math.random()
+            chaosLevel: Math.random(),
+            colorScheme: colorScheme
         };
         this.universes.push(universe);
+        this.currentUniverseColor = colorScheme; // Update current color
         return universe;
     }
 
@@ -350,6 +384,24 @@ class UniverseManager {
             timeScale: Math.random() * 2 + 0.5,
             entropy: Math.random()
         };
+    }
+
+    generateColorScheme() {
+        const schemes = [
+            { name: 'Cyan', hue: 0.5, sat: 0.8 },      // Cyan/Blue
+            { name: 'Purple', hue: 0.75, sat: 0.9 },   // Purple/Magenta
+            { name: 'Green', hue: 0.33, sat: 0.7 },    // Green
+            { name: 'Red', hue: 0.0, sat: 0.8 },       // Red
+            { name: 'Orange', hue: 0.08, sat: 0.9 },   // Orange
+            { name: 'Yellow', hue: 0.15, sat: 0.8 },   // Yellow
+            { name: 'Pink', hue: 0.9, sat: 0.9 },      // Pink
+            { name: 'Teal', hue: 0.45, sat: 0.7 }      // Teal
+        ];
+        return schemes[Math.floor(Math.random() * schemes.length)];
+    }
+
+    getCurrentColorScheme() {
+        return this.currentUniverseColor;
     }
 
     getCurrentMode() {
@@ -498,41 +550,48 @@ class HandTracker {
     classifyGesture(hand, allHands) {
         const thumb = hand[4];
         const index = hand[8];
+        const middle = hand[12];
+        const ring = hand[16];
         const pinky = hand[20];
+        const wrist = hand[0];
 
         const thumbIndexDist = Math.hypot(thumb.x - index.x, thumb.y - index.y);
         const thumbPinkyDist = Math.hypot(thumb.x - pinky.x, thumb.y - pinky.y);
         
+        // IRON MAN STYLE GESTURES - ONE HAND ONLY
+        
+        // Open palm (all fingers extended) = Rotate/Look around
+        const allFingersExtended = thumbPinkyDist > 0.4;
+        if (allFingersExtended) {
+            return 'look_around'; // Use hand movement to look around in 3D
+        }
+
+        // Pinch (thumb + index) = Summon entity
         if (thumbIndexDist < 0.12) {
-            const velocity = Math.hypot(this.gestureState.handVelocity.x, this.gestureState.handVelocity.y);
-            if (velocity > 0.3) {
-                return 'summon';
+            return 'summon';
+        }
+
+        // Point (index finger extended, others closed) = Evolve
+        const indexExtended = Math.hypot(index.x - wrist.x, index.y - wrist.y) > 0.15;
+        const middleClosed = Math.hypot(middle.x - wrist.x, middle.y - wrist.y) < 0.12;
+        if (indexExtended && middleClosed) {
+            return 'evolve';
+        }
+
+        // Fist (all fingers closed) = Create universe
+        if (thumbPinkyDist < 0.15) {
+            // Check if moving up (creating universe gesture)
+            if (this.gestureState.handVelocity.y < -0.8) {
+                return 'create_universe';
             }
-            return 'pinch';
-        }
-
-        if (allHands.length === 2) {
-            if (this.gestureState.handDistance < 0.3) {
-                return 'evolve';
-            }
-            
-            if (this.gestureState.handDistance > 0.6) {
-                return 'zoom_out';
-            }
-            
-            return 'two_hands';
-        }
-
-        if (this.gestureState.handVelocity.y < -1.0) {
-            return 'create_universe';
-        }
-
-        if (thumbPinkyDist > 0.5) {
-            return 'rotate';
-        }
-
-        if (thumbPinkyDist < 0.2) {
             return 'fist';
+        }
+
+        // Peace sign (index + middle extended) = Zoom
+        const middleExtended = Math.hypot(middle.x - wrist.x, middle.y - wrist.y) > 0.15;
+        const ringClosed = Math.hypot(ring.x - wrist.x, ring.y - wrist.y) < 0.12;
+        if (indexExtended && middleExtended && ringClosed) {
+            return 'zoom';
         }
 
         return 'idle';
@@ -615,6 +674,10 @@ class CosmicDex {
 
             this.universeManager = new UniverseManager(this.camera);
             this.universeManager.createUniverse();
+            
+            // Set initial universe color
+            window.currentUniverseColor = this.universeManager.getCurrentColorScheme();
+            console.log('Initial universe color:', window.currentUniverseColor.name);
 
             this.setupGestureHandlers();
 
@@ -679,34 +742,42 @@ class CosmicDex {
             
             switch (gesture) {
                 case 'summon':
-                    statusEl.textContent = 'Summoning entity...';
+                    statusEl.textContent = '🤏 Pinch: Summoning entity...';
                     this.summonEntity();
                     break;
 
                 case 'evolve':
-                    statusEl.textContent = 'Evolving entity...';
+                    statusEl.textContent = '☝️ Point: Evolving entity...';
                     this.evolveCurrentEntity();
                     break;
 
                 case 'create_universe':
-                    statusEl.textContent = 'Creating universe...';
+                    statusEl.textContent = '✊⬆️ Fist Up: Creating universe...';
                     this.createNewUniverse();
                     break;
 
-                case 'zoom_out':
-                    statusEl.textContent = 'Zooming universe...';
+                case 'look_around':
+                    statusEl.textContent = '✋ Open Palm: Looking around in 3D...';
                     break;
 
-                case 'rotate':
-                    statusEl.textContent = 'Rotating galaxy...';
+                case 'zoom':
+                    statusEl.textContent = '✌️ Peace Sign: Zooming...';
+                    break;
+
+                case 'fist':
+                    statusEl.textContent = '✊ Fist: Ready...';
+                    break;
+
+                case 'idle':
+                    statusEl.textContent = '👋 Show hand to interact...';
                     break;
 
                 case 'none':
-                    statusEl.textContent = 'Waiting for hands...';
+                    statusEl.textContent = 'Waiting for hand...';
                     break;
 
                 default:
-                    statusEl.textContent = `Gesture detected: ${gesture}`;
+                    statusEl.textContent = `Gesture: ${gesture}`;
             }
 
             const velocity = Math.hypot(state.handVelocity.x, state.handVelocity.y);
@@ -751,6 +822,19 @@ class CosmicDex {
 
     createNewUniverse() {
         const universe = this.universeManager.createUniverse();
+        
+        // Store color scheme globally for particles to use
+        window.currentUniverseColor = this.universeManager.getCurrentColorScheme();
+        console.log('New universe created with color:', window.currentUniverseColor.name);
+        
+        // Recreate current entity with new colors
+        if (this.particleSystem.currentEntity) {
+            const currentType = this.particleSystem.currentEntity.type;
+            this.particleSystem.removeEntity(this.particleSystem.currentEntity);
+            const newEntity = this.particleSystem.createEntity(currentType);
+            this.updateHUD(newEntity);
+        }
+        
         document.getElementById('universe-count').textContent = this.universeManager.getUniverseCount();
         this.cosmicPower = Math.max(this.cosmicPower - 40, 0);
     }
@@ -801,6 +885,20 @@ class CosmicDex {
         const gestureState = this.handTracker.getGestureState();
 
         this.particleSystem.update(time, gestureState);
+
+        // IRON MAN 3D CAMERA CONTROL - Look around with open palm
+        if (gestureState.currentGesture === 'look_around' && gestureState.prevWrist) {
+            const handX = gestureState.prevWrist.x;
+            const handY = gestureState.prevWrist.y;
+            
+            // Map hand position to camera rotation
+            const targetRotationY = (handX - 0.5) * Math.PI * 0.8;
+            const targetRotationX = (handY - 0.5) * Math.PI * 0.4;
+            
+            // Smooth camera movement
+            this.camera.rotation.y += (targetRotationY - this.camera.rotation.y) * 0.1;
+            this.camera.rotation.x += (targetRotationX - this.camera.rotation.x) * 0.1;
+        }
 
         const modeChanged = this.universeManager.update(gestureState.handDistance);
         if (modeChanged) {
