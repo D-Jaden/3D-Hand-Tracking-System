@@ -13,9 +13,9 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             overflow: hidden;
-            background: #000510;
+            background: #000;
             color: #fff;
             touch-action: none;
         }
@@ -36,10 +36,10 @@
             width: 120px;
             height: 90px;
             border-radius: 8px;
-            border: 2px solid rgba(0, 217, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             z-index: 10;
             object-fit: cover;
-            opacity: 0.8;
+            opacity: 0.7;
         }
 
         @media (min-width: 768px) {
@@ -48,7 +48,6 @@
                 right: 20px;
                 width: 200px;
                 height: 150px;
-                border-radius: 12px;
             }
         }
 
@@ -59,7 +58,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(0, 5, 16, 0.95);
+            background: rgba(0, 0, 0, 0.95);
             z-index: 1000;
             display: flex;
             align-items: center;
@@ -68,14 +67,13 @@
         }
 
         .modal-content {
-            background: linear-gradient(135deg, rgba(0, 30, 60, 0.9), rgba(0, 10, 30, 0.9));
-            border: 2px solid rgba(0, 217, 255, 0.5);
-            border-radius: 20px;
+            background: #111;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
             padding: 30px 20px;
             max-width: 500px;
             width: 100%;
             text-align: center;
-            box-shadow: 0 20px 60px rgba(0, 217, 255, 0.3);
         }
 
         @media (min-width: 768px) {
@@ -87,10 +85,8 @@
         .modal-content h1 {
             font-size: 24px;
             margin-bottom: 15px;
-            background: linear-gradient(90deg, #00d9ff, #ff00ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #fff;
+            font-weight: 600;
         }
 
         @media (min-width: 768px) {
@@ -103,7 +99,8 @@
         .modal-content p {
             font-size: 14px;
             margin-bottom: 25px;
-            color: #a0d9ff;
+            color: #999;
+            line-height: 1.5;
         }
 
         @media (min-width: 768px) {
@@ -116,15 +113,15 @@
         #grant-camera-btn {
             padding: 12px 30px;
             font-size: 16px;
-            background: linear-gradient(90deg, #00d9ff, #0088ff);
+            background: #fff;
             border: none;
-            border-radius: 12px;
-            color: #fff;
+            border-radius: 8px;
+            color: #000;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 20px rgba(0, 217, 255, 0.4);
+            transition: all 0.2s ease;
             width: 100%;
             max-width: 280px;
+            font-weight: 500;
         }
 
         @media (min-width: 768px) {
@@ -136,8 +133,8 @@
         }
 
         #grant-camera-btn:active {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 30px rgba(0, 217, 255, 0.6);
+            transform: scale(0.98);
+            background: #eee;
         }
 
         /* Loading Screen */
@@ -147,7 +144,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(0, 5, 16, 0.95);
+            background: rgba(0, 0, 0, 0.95);
             z-index: 999;
             display: flex;
             flex-direction: column;
@@ -162,8 +159,8 @@
         .loading-spinner {
             width: 60px;
             height: 60px;
-            border: 4px solid rgba(0, 217, 255, 0.2);
-            border-top: 4px solid #00d9ff;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-top: 2px solid #fff;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-bottom: 20px;
@@ -183,7 +180,7 @@
 
         #loading-text {
             font-size: 16px;
-            color: #00d9ff;
+            color: #fff;
             padding: 0 20px;
             text-align: center;
         }
@@ -205,9 +202,9 @@
         #entity-info {
             top: 10px;
             left: 10px;
-            background: rgba(0, 10, 30, 0.8);
-            border: 2px solid rgba(0, 217, 255, 0.5);
-            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
             padding: 12px;
             min-width: 200px;
             backdrop-filter: blur(10px);
@@ -218,7 +215,6 @@
             #entity-info {
                 top: 20px;
                 left: 20px;
-                border-radius: 15px;
                 padding: 20px;
                 min-width: 280px;
                 font-size: 14px;
@@ -227,12 +223,9 @@
 
         #entity-name {
             font-size: 18px;
-            font-weight: bold;
+            font-weight: 600;
             margin-bottom: 6px;
-            background: linear-gradient(90deg, #00d9ff, #ff00ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #fff;
         }
 
         @media (min-width: 768px) {
@@ -244,7 +237,7 @@
 
         #entity-type {
             font-size: 11px;
-            color: #a0d9ff;
+            color: #999;
             margin-bottom: 10px;
         }
 
@@ -258,16 +251,17 @@
         #rarity-badge {
             display: inline-block;
             padding: 4px 10px;
-            border-radius: 6px;
+            border-radius: 4px;
             font-size: 10px;
-            font-weight: bold;
+            font-weight: 600;
             margin-bottom: 12px;
+            background: #666;
+            color: #000;
         }
 
         @media (min-width: 768px) {
             #rarity-badge {
                 padding: 6px 12px;
-                border-radius: 8px;
                 font-size: 12px;
                 margin-bottom: 15px;
             }
@@ -288,21 +282,21 @@
         }
 
         .stat-label {
-            color: #7799bb;
+            color: #999;
         }
 
         .stat-value {
-            color: #00ff88;
-            font-weight: bold;
+            color: #fff;
+            font-weight: 600;
         }
 
         /* Bottom Left - Controls */
         #controls-info {
             bottom: 10px;
             left: 10px;
-            background: rgba(0, 10, 30, 0.8);
-            border: 2px solid rgba(0, 217, 255, 0.5);
-            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
             padding: 10px;
             backdrop-filter: blur(10px);
             max-width: calc(100vw - 20px);
@@ -312,7 +306,6 @@
             #controls-info {
                 bottom: 20px;
                 left: 20px;
-                border-radius: 15px;
                 padding: 20px;
                 max-width: none;
             }
@@ -323,6 +316,7 @@
             align-items: center;
             margin: 6px 0;
             font-size: 11px;
+            color: #ccc;
         }
 
         @media (min-width: 768px) {
@@ -348,9 +342,9 @@
         #power-meter {
             bottom: 10px;
             right: 10px;
-            background: rgba(0, 10, 30, 0.8);
-            border: 2px solid rgba(0, 217, 255, 0.5);
-            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
             padding: 12px;
             min-width: 150px;
             backdrop-filter: blur(10px);
@@ -360,7 +354,6 @@
             #power-meter {
                 bottom: 20px;
                 right: 20px;
-                border-radius: 15px;
                 padding: 20px;
                 min-width: 200px;
             }
@@ -368,7 +361,7 @@
 
         #power-label {
             font-size: 11px;
-            color: #a0d9ff;
+            color: #999;
             margin-bottom: 8px;
         }
 
@@ -382,25 +375,23 @@
         #power-bar {
             width: 100%;
             height: 20px;
-            background: rgba(0, 50, 100, 0.5);
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             overflow: hidden;
-            border: 1px solid rgba(0, 217, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         @media (min-width: 768px) {
             #power-bar {
                 height: 30px;
-                border-radius: 15px;
             }
         }
 
         #power-fill {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, #00d9ff, #ff00ff);
+            background: #fff;
             transition: width 0.3s ease;
-            box-shadow: 0 0 20px rgba(0, 217, 255, 0.6);
         }
 
         /* Top Center - Mode & Status */
@@ -408,9 +399,9 @@
             top: 10px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0, 10, 30, 0.8);
-            border: 2px solid rgba(0, 217, 255, 0.5);
-            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
             padding: 10px 15px;
             text-align: center;
             backdrop-filter: blur(10px);
@@ -420,7 +411,6 @@
         @media (min-width: 768px) {
             #mode-status {
                 top: 20px;
-                border-radius: 15px;
                 padding: 15px 30px;
                 max-width: none;
             }
@@ -428,8 +418,8 @@
 
         #current-mode {
             font-size: 14px;
-            font-weight: bold;
-            color: #00ff88;
+            font-weight: 600;
+            color: #fff;
             margin-bottom: 6px;
         }
 
@@ -442,7 +432,7 @@
 
         #gesture-status {
             font-size: 11px;
-            color: #a0d9ff;
+            color: #999;
         }
 
         @media (min-width: 768px) {
@@ -457,6 +447,7 @@
             justify-content: center;
             margin-top: 6px;
             font-size: 10px;
+            color: #999;
         }
 
         @media (min-width: 768px) {
@@ -470,7 +461,7 @@
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: #ff4444;
+            background: #666;
             margin-right: 6px;
             animation: pulse 2s infinite;
         }
@@ -484,7 +475,7 @@
         }
 
         .status-dot.active {
-            background: #00ff88;
+            background: #fff;
         }
 
         @keyframes pulse {
@@ -496,9 +487,9 @@
         #universe-counter {
             top: 110px;
             right: 10px;
-            background: rgba(0, 10, 30, 0.8);
-            border: 2px solid rgba(0, 217, 255, 0.5);
-            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
             padding: 10px;
             text-align: center;
             backdrop-filter: blur(10px);
@@ -508,14 +499,13 @@
             #universe-counter {
                 top: 200px;
                 right: 20px;
-                border-radius: 15px;
                 padding: 15px;
             }
         }
 
         #universe-label {
             font-size: 10px;
-            color: #a0d9ff;
+            color: #999;
             margin-bottom: 4px;
         }
 
@@ -528,11 +518,8 @@
 
         #universe-count {
             font-size: 24px;
-            font-weight: bold;
-            background: linear-gradient(90deg, #00d9ff, #ff00ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-weight: 700;
+            color: #fff;
         }
 
         @media (min-width: 768px) {
@@ -567,11 +554,8 @@
 
         .evolution-text {
             font-size: 32px;
-            font-weight: bold;
-            background: linear-gradient(90deg, #00d9ff, #ff00ff, #00ff88);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-weight: 700;
+            color: #fff;
             animation: evolutionGlow 1s ease;
         }
 
@@ -591,9 +575,9 @@
     <!-- Camera Permission Modal -->
     <div id="camera-permission-modal">
         <div class="modal-content">
-            <h1>🌌 Welcome to Cosmic Dex</h1>
-            <p>To become a Cosmic Trainer and control the universe with your hands, we need camera access.</p>
-            <button id="grant-camera-btn">🎮 Grant Camera Access</button>
+            <h1>Welcome to Cosmic Dex</h1>
+            <p>To control the universe with your hands, we need camera access.</p>
+            <button id="grant-camera-btn">Grant Camera Access</button>
         </div>
     </div>
 
@@ -605,7 +589,7 @@
 
     <!-- Evolution Animation -->
     <div id="evolution-overlay" class="hidden">
-        <div class="evolution-text">✨ EVOLVING ✨</div>
+        <div class="evolution-text">EVOLVING</div>
     </div>
 
     <!-- Main Canvas -->
@@ -646,7 +630,7 @@
 
     <div id="controls-info" class="hud-overlay">
         <div class="control-item">
-            <span class="control-icon">🤏➡️</span>
+            <span class="control-icon">🤏</span>
             <span>Pinch + Forward = Summon</span>
         </div>
         <div class="control-item">
@@ -658,13 +642,13 @@
             <span>Two Hands Apart = Zoom</span>
         </div>
         <div class="control-item">
-            <span class="control-icon">👆⬆️</span>
+            <span class="control-icon">👆</span>
             <span>Swipe Up = New Universe</span>
         </div>
     </div>
 
     <div id="power-meter" class="hud-overlay">
-        <div id="power-label">⚡ Cosmic Power</div>
+        <div id="power-label">Cosmic Power</div>
         <div id="power-bar">
             <div id="power-fill"></div>
         </div>
@@ -684,20 +668,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 
-    <!-- Application Modules - LOAD IN CORRECT ORDER -->
-    <script defer src="particles.js"></script>
-    <script defer src="universeModes.js"></script>
-    <script defer src="handTracking.js"></script>
-    <script defer src="main.js"></script>
-    
-    <script>
-        // Ensure all scripts are loaded before initializing
-        window.addEventListener('DOMContentLoaded', () => {
-            console.log('DOM loaded');
-            console.log('ParticleSystem available:', typeof ParticleSystem);
-            console.log('UniverseManager available:', typeof UniverseManager);
-            console.log('HandTracker available:', typeof HandTracker);
-        });
-    </script>
+    <!-- Main Application (all-in-one) -->
+    <script src="main.js"></script>
 </body>
 </html>
