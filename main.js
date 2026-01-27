@@ -738,51 +738,55 @@ class CosmicDex {
         this.handTracker.onGesture((gesture, state) => {
             const statusEl = document.getElementById('gesture-status');
             
-            switch (gesture) {
-                case 'summon':
-                    statusEl.textContent = '🤏 Pinch: Summoning entity...';
-                    this.summonEntity();
-                    break;
+            if (statusEl) {
+                switch (gesture) {
+                    case 'summon':
+                        statusEl.textContent = '🤏 Pinch: Summoning entity...';
+                        this.summonEntity();
+                        break;
 
-                case 'evolve':
-                    statusEl.textContent = '☝️ Point: Evolving entity...';
-                    this.evolveCurrentEntity();
-                    break;
+                    case 'evolve':
+                        statusEl.textContent = '☝️ Point: Evolving entity...';
+                        this.evolveCurrentEntity();
+                        break;
 
-                case 'create_universe':
-                    statusEl.textContent = '✊⬆️ Fist Up: Creating universe...';
-                    this.createNewUniverse();
-                    break;
+                    case 'create_universe':
+                        statusEl.textContent = '✊⬆️ Fist Up: Creating universe...';
+                        this.createNewUniverse();
+                        break;
 
-                case 'look_around':
-                    statusEl.textContent = '✋ Open Palm: Looking around in 3D...';
-                    break;
+                    case 'look_around':
+                        statusEl.textContent = '✋ Open Palm: Looking around in 3D...';
+                        break;
 
-                case 'zoom':
-                    statusEl.textContent = '✌️ Peace Sign: Zooming...';
-                    break;
+                    case 'zoom':
+                        statusEl.textContent = '✌️ Peace Sign: Zooming...';
+                        break;
 
-                case 'fist':
-                    statusEl.textContent = '✊ Fist: Ready...';
-                    break;
+                    case 'fist':
+                        statusEl.textContent = '✊ Fist: Ready...';
+                        break;
 
-                case 'idle':
-                    statusEl.textContent = '👋 Show hand to interact...';
-                    break;
+                    case 'idle':
+                        statusEl.textContent = '👋 Show hand to interact...';
+                        break;
 
-                case 'none':
-                    statusEl.textContent = 'Waiting for hand...';
-                    break;
+                    case 'none':
+                        statusEl.textContent = 'Waiting for hand...';
+                        break;
 
-                default:
-                    statusEl.textContent = `Gesture: ${gesture}`;
+                    default:
+                        statusEl.textContent = `Gesture: ${gesture}`;
+                }
             }
 
             const velocity = Math.hypot(state.handVelocity.x, state.handVelocity.y);
             this.cosmicPower = Math.min(this.cosmicPower + velocity * 0.1, 100);
             this.cosmicPower = Math.max(this.cosmicPower - 0.05, 0);
             const powerFill = document.getElementById('power-fill');
-            powerFill.style.width = this.cosmicPower + '%';
+            if (powerFill) {
+                powerFill.style.width = this.cosmicPower + '%';
+            }
         });
     }
 
@@ -833,19 +837,33 @@ class CosmicDex {
             this.updateHUD(newEntity);
         }
         
-        document.getElementById('universe-count').textContent = this.universeManager.getUniverseCount();
+        const counterEl = document.getElementById('universe-count');
+        if (counterEl) {
+            counterEl.textContent = this.universeManager.getUniverseCount();
+        }
         this.cosmicPower = Math.max(this.cosmicPower - 40, 0);
     }
 
     updateHUD(entity) {
-        document.getElementById('entity-name').textContent = entity.name;
-        document.getElementById('entity-type').textContent = entity.type.replace('_', ' ').toUpperCase();
-        document.getElementById('rarity-value').textContent = entity.rarity;
-        document.getElementById('stat-size').textContent = entity.size.toFixed(2);
-        document.getElementById('stat-energy').textContent = (entity.energy * 100).toFixed(0) + '%';
-        document.getElementById('stat-evolution').textContent = 'Level ' + entity.evolution;
-
+        const nameEl = document.getElementById('entity-name');
+        const typeEl = document.getElementById('entity-type');
+        const sizeEl = document.getElementById('stat-size');
+        const energyEl = document.getElementById('stat-energy');
+        const evolutionEl = document.getElementById('stat-evolution');
         const rarityEl = document.getElementById('rarity-badge');
+
+        if (!nameEl || !typeEl || !rarityEl) {
+            console.warn('HUD elements not found, skipping update');
+            return;
+        }
+
+        nameEl.textContent = entity.name;
+        typeEl.textContent = entity.type.replace('_', ' ').toUpperCase();
+        rarityEl.textContent = entity.rarity;
+        if (sizeEl) sizeEl.textContent = entity.size.toFixed(2);
+        if (energyEl) energyEl.textContent = (entity.energy * 100).toFixed(0) + '%';
+        if (evolutionEl) evolutionEl.textContent = 'Level ' + entity.evolution;
+
         const rarityColors = {
             'COMMON': '#666',
             'UNCOMMON': '#999',
@@ -867,11 +885,17 @@ class CosmicDex {
     }
 
     showEvolutionAnimation() {
-        document.getElementById('evolution-overlay').classList.remove('hidden');
+        const overlay = document.getElementById('evolution-overlay');
+        if (overlay) {
+            overlay.classList.remove('hidden');
+        }
     }
 
     hideEvolutionAnimation() {
-        document.getElementById('evolution-overlay').classList.add('hidden');
+        const overlay = document.getElementById('evolution-overlay');
+        if (overlay) {
+            overlay.classList.add('hidden');
+        }
     }
 
     animate() {
@@ -901,7 +925,10 @@ class CosmicDex {
         const modeChanged = this.universeManager.update(gestureState.handDistance);
         if (modeChanged) {
             const mode = this.universeManager.getCurrentMode();
-            document.getElementById('current-mode').textContent = mode.replace('_', ' ').toUpperCase() + ' VIEW';
+            const modeEl = document.getElementById('current-mode');
+            if (modeEl) {
+                modeEl.textContent = mode.replace('_', ' ').toUpperCase() + ' VIEW';
+            }
         }
 
         if (this.evolutionCooldown > 0) {
