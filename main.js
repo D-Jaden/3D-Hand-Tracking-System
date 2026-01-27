@@ -54,7 +54,7 @@ class ParticleSystem {
             colors[i3 + 1] = rgb[1];
             colors[i3 + 2] = rgb[2];
 
-            sizes[i] = Math.random() * 0.08 + 0.04;
+            sizes[i] = Math.random() * 0.5 + 0.3; // FIXED: Increased from 0.08 + 0.04
             velocities[i3] = (Math.random() - 0.5) * 0.01;
             velocities[i3 + 1] = (Math.random() - 0.5) * 0.01;
             velocities[i3 + 2] = (Math.random() - 0.5) * 0.01;
@@ -81,7 +81,7 @@ class ParticleSystem {
                     vec3 pos = position + velocity * time;
                     
                     vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
-                    gl_PointSize = size * 400.0 / -mvPosition.z;
+                    gl_PointSize = size * 100.0 / -mvPosition.z; // FIXED: Changed from 400.0 to 100.0
                     gl_Position = projectionMatrix * mvPosition;
                 }
             `,
@@ -357,12 +357,12 @@ class UniverseManager {
 
     getCameraDistance(mode) {
         const distances = {
-            'planet': 5,
-            'solar_system': 12,
-            'galaxy': 25,
-            'multiverse': 50
+            'planet': 8, // FIXED: Increased from 5 to 8
+            'solar_system': 15, // FIXED: Increased from 12 to 15
+            'galaxy': 30, // FIXED: Increased from 25 to 30
+            'multiverse': 60 // FIXED: Increased from 50 to 60
         };
-        return distances[mode] || 5;
+        return distances[mode] || 8;
     }
 
     createUniverse() {
@@ -706,8 +706,6 @@ class CosmicDex {
     initThree() {
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(0x000000);
-        // Remove fog that was hiding particles
-        // this.scene.fog = new THREE.FogExp2(0x000000, 0.05);
 
         this.camera = new THREE.PerspectiveCamera(
             75,
@@ -715,7 +713,7 @@ class CosmicDex {
             0.1,
             1000
         );
-        this.camera.position.z = 5;
+        this.camera.position.z = 8; // FIXED: Increased from 5 to 8
 
         const canvas = document.getElementById('cosmic-canvas');
         this.renderer = new THREE.WebGLRenderer({
