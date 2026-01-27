@@ -584,7 +584,7 @@
     <!-- Loading Screen -->
     <div id="loading-screen" class="hidden">
         <div class="loading-spinner"></div>
-        <div id="loading-text">Initializing...</div>
+        <p id="loading-text">Initializing...</p>
     </div>
 
     <!-- Evolution Animation -->
@@ -594,28 +594,26 @@
 
     <!-- Main Canvas -->
     <canvas id="cosmic-canvas"></canvas>
+    <video id="camera-feed" autoplay playsinline></video>
 
-    <!-- Camera Feed -->
-    <video id="camera-feed" autoplay playsinline muted></video>
-
-    <!-- HUD Overlays -->
+    <!-- HUD -->
     <div id="entity-info" class="hud-overlay">
         <div id="entity-name">No Entity</div>
         <div id="entity-type">-</div>
-        <div id="rarity-badge">
-            <span id="rarity-value">COMMON</span>
+        <div>
+            <span id="rarity-badge">COMMON</span>
         </div>
         <div class="stat-row">
             <span class="stat-label">Size:</span>
-            <span class="stat-value" id="stat-size">0.00</span>
+            <span id="stat-size" class="stat-value">0.00</span>
         </div>
         <div class="stat-row">
             <span class="stat-label">Energy:</span>
-            <span class="stat-value" id="stat-energy">0%</span>
+            <span id="stat-energy" class="stat-value">0%</span>
         </div>
         <div class="stat-row">
             <span class="stat-label">Evolution:</span>
-            <span class="stat-value" id="stat-evolution">Level 0</span>
+            <span id="stat-evolution" class="stat-value">Level 0</span>
         </div>
     </div>
 
@@ -623,8 +621,7 @@
         <div id="current-mode">PLANET VIEW</div>
         <div id="gesture-status">Waiting for hands...</div>
         <div id="hand-status">
-            <span class="status-dot"></span>
-            <span>Hand Tracking</span>
+            <span class="status-dot"></span>Hand Tracking
         </div>
     </div>
 
@@ -663,10 +660,10 @@
         <div id="universe-count">1</div>
     </div>
 
-    <!-- Three.js Library -->
+    <!-- Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-    <!-- MediaPipe Hands -->
+    <!-- MediaPipe -->
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
